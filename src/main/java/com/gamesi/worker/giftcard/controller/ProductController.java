@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
@@ -19,8 +20,8 @@ public class ProductController {
         return new ResponseEntity<>(productService.allProducts(), HttpStatus.OK);
     }
 
-    @GetMapping("/cache")
-    public ResponseEntity<?> findAllProduct(){
-        return new ResponseEntity<>(productService.readProducts(), HttpStatus.OK);
+    @GetMapping("/{param}")
+    public ResponseEntity<?> findAllProduct(@PathVariable String param){
+        return new ResponseEntity<>(productService.findByParam(param), HttpStatus.OK);
     }
 }
