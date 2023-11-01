@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,11 +124,17 @@ public class ProductService {
                    productEntity.setProductId(p.getProductId());
                    productEntity.setGlobal(p.getGlobal());
                    productEntity.setSenderFee(p.getSenderFee());
-                   productEntity.setMinSenderDenomination(o.doubleValue());
+                   productEntity.setUnitPrice(o);
                    productEntity.setCurrency(p.getSenderCurrencyCode());
                    productEntity.setSupportsPreOrder(p.getSupportsPreOrder());
                    productEntity.setCountryName(p.getCountry().getName());
                    productEntity.setCountryCode(p.getCountry().getIsoName());
+                   if(p.getRedeemInstruction()!=null){
+                       if(p.getRedeemInstruction().getVerbose()!=null)
+                       productEntity.setDescription(p.getRedeemInstruction().getVerbose());
+                       if(p.getRedeemInstruction().getConcise()!=null)
+                       productEntity.setMainSite(p.getRedeemInstruction().getConcise());
+                   }
                    save(productEntity);
                    System.out.println("-----added------");
                });
@@ -137,11 +144,17 @@ public class ProductService {
                productEntity.setProductId(p.getProductId());
                productEntity.setGlobal(p.getGlobal());
                productEntity.setSenderFee(p.getSenderFee());
-               productEntity.setMinSenderDenomination(p.getMinSenderDenomination());
+               productEntity.setUnitPrice(p.getMinSenderDenomination());
                productEntity.setCurrency(p.getSenderCurrencyCode());
                productEntity.setSupportsPreOrder(p.getSupportsPreOrder());
                productEntity.setCountryName(p.getCountry().getName());
                productEntity.setCountryCode(p.getCountry().getIsoName());
+               if(p.getRedeemInstruction()!=null){
+                   if(p.getRedeemInstruction().getVerbose()!=null)
+                       productEntity.setDescription(p.getRedeemInstruction().getVerbose());
+                   if(p.getRedeemInstruction().getConcise()!=null)
+                       productEntity.setMainSite(p.getRedeemInstruction().getConcise());
+               }
                save(productEntity);
                System.out.println("-----added------");
            }
@@ -163,11 +176,13 @@ public class ProductService {
         productEntity1.setGlobal(productEntity.getGlobal());
         productEntity1.setCurrency(productEntity.getCurrency());
         productEntity1.setCountryName(productEntity.getCountryName());
-        productEntity1.setCountryCode(productEntity1.getCountryCode());
+        productEntity1.setCountryCode(productEntity.getCountryCode());
         productEntity1.setPic1(productEntity.getPic1());
         productEntity1.setSenderFee(productEntity.getSenderFee());
-       productEntity1.setMinSenderDenomination(productEntity1.getMinSenderDenomination());
-        productEntity1.setSupportsPreOrder(productEntity1.getSupportsPreOrder());
+        productEntity1.setUnitPrice(productEntity.getUnitPrice());
+        productEntity1.setDescription(productEntity.getDescription());
+        productEntity1.setMainSite(productEntity.getMainSite());
+        productEntity1.setSupportsPreOrder(productEntity.getSupportsPreOrder());
         productDao.save(productEntity1);
     }
 
