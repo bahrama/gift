@@ -17,7 +17,8 @@ public class ProductController {
     private final ProductService productService;
     @GetMapping
     public ResponseEntity<?> findProduct(){
-        return new ResponseEntity<>(productService.allProducts(), HttpStatus.OK);
+       // return new ResponseEntity<>(productService.allProducts(), HttpStatus.OK);
+        return null;
     }
 
     @GetMapping("/{param}")

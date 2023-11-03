@@ -31,18 +31,18 @@ public class ProductService {
     private final RestTemplate restTemplate;
     private final ProductDao productDao;
 
-    private String cookie = "Bearer eyJraWQiOiJjNGE1ZWU1Zi0xYmE2LTQ1N2UtOTI3Yi1lYzdiODliNzcxZTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMTE5MyIsImlzcyI6Imh0dHBzOi8vcmVsb2FkbHktc2FuZGJveC5hdXRoMC5jb20vIiwiaHR0cHM6Ly9yZWxvYWRseS5jb20vc2FuZGJveCI6dHJ1ZSwiaHR0cHM6Ly9yZWxvYWRseS5jb20vcHJlcGFpZFVzZXJJZCI6IjIxMTkzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXVkIjoiaHR0cHM6Ly9naWZ0Y2FyZHMtc2FuZGJveC5yZWxvYWRseS5jb20iLCJuYmYiOjE2OTg3NTA3NTksImF6cCI6IjIxMTkzIiwic2NvcGUiOiJkZXZlbG9wZXIiLCJleHAiOjE2OTg4MzcxNTksImh0dHBzOi8vcmVsb2FkbHkuY29tL2p0aSI6IjRlNDU0MGI4LWY0NjktNGI1ZS04YTI3LTQ0NDA1YWQzY2QzZSIsImlhdCI6MTY5ODc1MDc1OSwianRpIjoiZmU5NzVjOTMtYzliOC00NWNmLTllM2EtODUxNDIwOTAxMzkwIn0.IP64Dkyovp4XZAUZp7DlOfT0H9ZxfEz3TKvPLTczKAA";
+    private String cookie = "Bearer eyJraWQiOiJjNGE1ZWU1Zi0xYmE2LTQ1N2UtOTI3Yi1lYzdiODliNzcxZTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMTE5MyIsImlzcyI6Imh0dHBzOi8vcmVsb2FkbHktc2FuZGJveC5hdXRoMC5jb20vIiwiaHR0cHM6Ly9yZWxvYWRseS5jb20vc2FuZGJveCI6dHJ1ZSwiaHR0cHM6Ly9yZWxvYWRseS5jb20vcHJlcGFpZFVzZXJJZCI6IjIxMTkzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXVkIjoiaHR0cHM6Ly9naWZ0Y2FyZHMtc2FuZGJveC5yZWxvYWRseS5jb20iLCJuYmYiOjE2OTkwMjIyNjEsImF6cCI6IjIxMTkzIiwic2NvcGUiOiJkZXZlbG9wZXIiLCJleHAiOjE2OTkxMDg2NjEsImh0dHBzOi8vcmVsb2FkbHkuY29tL2p0aSI6IjlmZDBkZDk1LWUwMWEtNDMyMi04YzA4LWY2NWM4MWM2MWIwYyIsImlhdCI6MTY5OTAyMjI2MSwianRpIjoiMzk0N2I1OTAtNzFmZC00YzJkLTkxMmItMDE0YmYyZjU3ZjhkIn0.xi0ztgqakIqyDWN5ifjWXfhshPGYO-p_T_9hBtnPZN8";
 
 
     private final RedisTemplate<String,Object> redisTemplate;
-    private HashOperations<String,String, ProductRes> hashOperations;
+    private HashOperations<String,String, List<ProductEntity>> hashOperations;
 
     @PostConstruct
     private void initHashOper(){
         hashOperations = redisTemplate.opsForHash();
     }
 
-    public ProductRes allProducts(){
+/*    public ProductRes allProducts(){
         HttpHeaders headers = new HttpHeaders();
         headers.set("Accept","application/com.reloadly.giftcards-v1+json");
         headers.set("Authorization",cookie);
@@ -60,41 +60,41 @@ public class ProductService {
 
         hashOperations.put(CACHE_NAME , "main",productRes);
         return productRes;
-    }
+    }*/
 
 
+/*
 
     public ProductRes readProducts(){
         return (ProductRes) hashOperations.entries(CACHE_NAME).get("main");
     }
+*/
 
     //@Scheduled(cron ="${Scheduled.time}")
     //@Scheduled(cron ="@hourly")
-/*    @Async
-    @Scheduled(fixedRate = 21600000)
-    public void schaduleProducts(){
-        hashOperations.delete(CACHE_NAME , "main");
-        System.out.println("----------------------------");
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Accept","application/com.reloadly.giftcards-v1+json");
-        headers.set("Authorization",cookie);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        ProductRes productRes = restTemplate
-                .exchange("https://giftcards-sandbox.reloadly.com/products", HttpMethod.GET, entity, ProductRes.class).getBody();
-        int totalElements = productRes.getTotalElements();
-        int totalPage = productRes.getTotalPages();
-
-        for (int i =2; i<=totalPage ; i++){
-            ProductRes productRes2 = restTemplate
-                    .exchange("https://giftcards-sandbox.reloadly.com/products?size=200&page=" + i, HttpMethod.GET, entity, ProductRes.class).getBody();
-            productRes.getContent().addAll(productRes2.getContent());
-            System.out.println(i);
-        }
-        hashOperations.put(CACHE_NAME , "main",productRes);
-
-    }*/
-
     @Async
+    @Scheduled(fixedRate = 21600001)
+    public void schaduleQueries(){
+        hashOperations.entries(CACHE_NAME).get("xbox");
+        hashOperations.delete(CACHE_NAME , "xbox");
+        List<ProductEntity> productEntitiesXbox = productDao.customFind("xbox");
+        hashOperations.put(CACHE_NAME , "xbox",productEntitiesXbox);
+        hashOperations.delete(CACHE_NAME , "playstation");
+        List<ProductEntity> productEntitiesPlaystation = productDao.customFind("playstation");
+        hashOperations.put(CACHE_NAME , "playstation",productEntitiesPlaystation);
+        hashOperations.delete(CACHE_NAME , "binance");
+        List<ProductEntity> productEntitiesBinance = productDao.customFind("binance");
+        hashOperations.put(CACHE_NAME , "binance",productEntitiesBinance);
+        hashOperations.delete(CACHE_NAME , "steam");
+        List<ProductEntity> productEntitiesSteam = productDao.customFind("steam");
+        hashOperations.put(CACHE_NAME , "steam",productEntitiesSteam);
+       // hashOperations.entries(CACHE_NAME).get("main");
+    }
+
+
+
+
+/*    @Async
     @Scheduled(fixedRate = 21600000)
     @Transactional
     public void schaduleProducts(){
@@ -158,16 +158,14 @@ public class ProductService {
                save(productEntity);
                System.out.println("-----added------");
            }
-
-
         });
-    }
+    }*/
 
-    public List<Content> findByParam(String param){
+/*    public List<Content> findByParam(String param){
        return hashOperations.entries(CACHE_NAME).get("main").getContent()
                .stream().filter(p->p.getProductName().toLowerCase().contains(param.toLowerCase()))
                .skip(9).limit(5).collect(Collectors.toList());
-    }
+    }*/
     @Transactional
     public void save(ProductEntity productEntity){
         ProductEntity productEntity1 = new ProductEntity();
@@ -186,4 +184,7 @@ public class ProductService {
         productDao.save(productEntity1);
     }
 
+    public List<ProductEntity> findByParam(String param) {
+        return hashOperations.entries(CACHE_NAME).get(param);
+    }
 }
