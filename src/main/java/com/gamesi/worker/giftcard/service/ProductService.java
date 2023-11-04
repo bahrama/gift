@@ -184,7 +184,13 @@ public class ProductService {
         productDao.save(productEntity1);
     }
 
-    public List<ProductEntity> findByParam(String param) {
-        return hashOperations.entries(CACHE_NAME).get(param);
+    public List<ProductEntity> findByParam(String param , int page) {
+        return hashOperations.entries(CACHE_NAME).get(param)
+                .stream().filter(p->p.getProductName().toLowerCase().contains(param.toLowerCase()))
+                .skip((page-1)*16).limit(16).collect(Collectors.toList());
+    }
+
+    public int findByParamSize(String param){
+        return hashOperations.entries(CACHE_NAME).get(param).size();
     }
 }

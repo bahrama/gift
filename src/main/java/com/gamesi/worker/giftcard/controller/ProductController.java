@@ -1,6 +1,7 @@
 package com.gamesi.worker.giftcard.controller;
 
 import com.gamesi.worker.giftcard.service.ProductService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,12 @@ public class ProductController {
     }
 
     @GetMapping("/{param}")
-    public ResponseEntity<?> findAllProduct(@PathVariable String param){
-        return new ResponseEntity<>(productService.findByParam(param), HttpStatus.OK);
+    public ResponseEntity<?> findAllProduct(@PathVariable String param, @PathParam("page") int page){
+        return new ResponseEntity<>(productService.findByParam(param,page), HttpStatus.OK);
+    }
+
+    @GetMapping("/size/{param}")
+    public ResponseEntity<?> findAllProductSize(@PathVariable String param){
+        return new ResponseEntity<>(productService.findByParamSize(param), HttpStatus.OK);
     }
 }
