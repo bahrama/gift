@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gamesi-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/opt/fimg"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gamesi-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wildfly
+  labels:
+    app: wildfly-app
+spec:
+  volumes:
+    - name: gamesi-pv-claim
+      persistentVolumeClaim:
+        claimName: gamesi-pv-claim
+  containers:
+    - name: wildfly-container
+      image: alialikhahasl/wildfly30:v1.3
+      command:
+        - /app/wildfly/wildfly-30.0.0.Final/bin/standalone.sh
+      ports:
+        - containerPort: 8080
+      volumeMounts:
+        - name: gamesi-pv-claim
+          mountPath: "/app/wildfly/wildfly-30.0.0.Final/fimg/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gamesi-service
+spec:
+  type: NodePort
+  selector:
+    app: wildfly-app
+  ports:
+    - protocol: TCP
+      targetPort: 8080
+      port: 8080
+      nodePort: 30008

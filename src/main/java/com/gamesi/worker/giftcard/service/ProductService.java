@@ -31,7 +31,7 @@ public class ProductService {
     private final RestTemplate restTemplate;
     private final ProductDao productDao;
 
-    private String cookie = "Bearer eyJraWQiOiJjNGE1ZWU1Zi0xYmE2LTQ1N2UtOTI3Yi1lYzdiODliNzcxZTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMTE5MyIsImlzcyI6Imh0dHBzOi8vcmVsb2FkbHktc2FuZGJveC5hdXRoMC5jb20vIiwiaHR0cHM6Ly9yZWxvYWRseS5jb20vc2FuZGJveCI6dHJ1ZSwiaHR0cHM6Ly9yZWxvYWRseS5jb20vcHJlcGFpZFVzZXJJZCI6IjIxMTkzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXVkIjoiaHR0cHM6Ly9naWZ0Y2FyZHMtc2FuZGJveC5yZWxvYWRseS5jb20iLCJuYmYiOjE2OTkwMjIyNjEsImF6cCI6IjIxMTkzIiwic2NvcGUiOiJkZXZlbG9wZXIiLCJleHAiOjE2OTkxMDg2NjEsImh0dHBzOi8vcmVsb2FkbHkuY29tL2p0aSI6IjlmZDBkZDk1LWUwMWEtNDMyMi04YzA4LWY2NWM4MWM2MWIwYyIsImlhdCI6MTY5OTAyMjI2MSwianRpIjoiMzk0N2I1OTAtNzFmZC00YzJkLTkxMmItMDE0YmYyZjU3ZjhkIn0.xi0ztgqakIqyDWN5ifjWXfhshPGYO-p_T_9hBtnPZN8";
+    private String cookie = "Bearer eyJraWQiOiJjNGE1ZWU1Zi0xYmE2LTQ1N2UtOTI3Yi1lYzdiODliNzcxZTIiLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMTE5MyIsImlzcyI6Imh0dHBzOi8vcmVsb2FkbHktc2FuZGJveC5hdXRoMC5jb20vIiwiaHR0cHM6Ly9yZWxvYWRseS5jb20vc2FuZGJveCI6dHJ1ZSwiaHR0cHM6Ly9yZWxvYWRseS5jb20vcHJlcGFpZFVzZXJJZCI6IjIxMTkzIiwiZ3R5IjoiY2xpZW50LWNyZWRlbnRpYWxzIiwiYXVkIjoiaHR0cHM6Ly9naWZ0Y2FyZHMtc2FuZGJveC5yZWxvYWRseS5jb20iLCJuYmYiOjE3MDA3MjgzODUsImF6cCI6IjIxMTkzIiwic2NvcGUiOiJkZXZlbG9wZXIiLCJleHAiOjE3MDA4MTQ3ODUsImh0dHBzOi8vcmVsb2FkbHkuY29tL2p0aSI6IjhmZjhjMTBkLTY0YTEtNDNjOS1iMjUwLWM5ZjY2YTQwNWJkMiIsImlhdCI6MTcwMDcyODM4NSwianRpIjoiYjEwZTU4MWMtNTczNC00NjMyLWI4YzEtZWQ0ZTEyNTNmNzFlIn0.16gHkYspPEnynV0x_kKzNus04OTmrhZk8m4nkhOqFuM";
 
 
     private final RedisTemplate<String,Object> redisTemplate;
@@ -79,22 +79,26 @@ public class ProductService {
         hashOperations.delete(CACHE_NAME , "xbox");
         List<ProductEntity> productEntitiesXbox = productDao.customFind("xbox");
         hashOperations.put(CACHE_NAME , "xbox",productEntitiesXbox);
+        System.out.println("xbox added ---------------");
         hashOperations.delete(CACHE_NAME , "playstation");
         List<ProductEntity> productEntitiesPlaystation = productDao.customFind("playstation");
         hashOperations.put(CACHE_NAME , "playstation",productEntitiesPlaystation);
+        System.out.println("pls added ---------------");
         hashOperations.delete(CACHE_NAME , "binance");
         List<ProductEntity> productEntitiesBinance = productDao.customFind("binance");
         hashOperations.put(CACHE_NAME , "binance",productEntitiesBinance);
+        System.out.println("binc added ---------------");
         hashOperations.delete(CACHE_NAME , "steam");
         List<ProductEntity> productEntitiesSteam = productDao.customFind("steam");
         hashOperations.put(CACHE_NAME , "steam",productEntitiesSteam);
+        System.out.println("steam added ---------------");
        // hashOperations.entries(CACHE_NAME).get("main");
     }
 
 
 
-
-/*    @Async
+/*
+    @Async
     @Scheduled(fixedRate = 21600000)
     @Transactional
     public void schaduleProducts(){

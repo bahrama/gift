@@ -1,0 +1,24 @@
+FROM openjdk:22-slim-bullseye
+WORKDIR /app/worker
+COPY ../.. .
+RUN apt update && apt upgrade -y
+RUN apt install wget -y
+RUN wget https://github.com/wildfly/wildfly/releases/download/30.0.0.Final/wildfly-30.0.0.Final.tar.gz
+RUN tar -xvf wildfly-30.0.0.Final.tar.gz
+RUN wget https://dlcdn.apache.org/maven/maven-3/3.9.5/binaries/apache-maven-3.9.5-bin.tar.gz
+RUN tar -xvf apache-maven-3.9.5-bin.tar.gz
+RUN apt install git -y
+RUN git clone https://alialikhahasl:ali680313@gitlab.com/alialikhahasl/gamesi-wildfly.git
+RUN rm -rf wildfly-30.0.0.Final/modules/system/layers/base/org/eclipse/persistence/
+RUN mv gamesi-wildfly/wildfly-conf/postgresql/ wildfly-30.0.0.Final/modules/system/layers/base/org/
+RUN mv gamesi-wildfly/wildfly-conf/persistence/ wildfly-30.0.0.Final/modules/system/layers/base/org/eclipse/
+RUN cp gamesi-wildfly/wildfly-conf/standalone.xml wildfly-30.0.0.Final/standalone/configuration/
+RUN mkdir wildfly-30.0.0.Final/fimg
+RUN apt install iputils-ping -y
+RUN apt install net-tools -y
+RUN apt install curl -y
+RUN apt install nano -y
+#ARG PATH=/app/wildfly/apache-maven-3.9.5/bin:$PATH
+#RUN cd gamesi-wildfly/ && mvn clean && mvn install
+RUN cp /app/wildfly/gamesi-wildfly/ear/target/GameSi.ear /app/wildfly/wildfly-30.0.0.Final/standalone/deployments/
+EXPOSE 8080
